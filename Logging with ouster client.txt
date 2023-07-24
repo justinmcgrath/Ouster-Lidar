@@ -1,0 +1,22 @@
+The Ouster LIDAR by default uses a link-local address by default (addresses in 169.254.0.0/16), but you can also access it by a host name, os-XXXX, where XXXX is the serial number written on the case.
+
+Ours is os-992046000275 which for most programs can be used in place of the IP address. You can access it in a Web browser at http://os-992046000275.local/.
+
+If you need the IP address you can get it from `ping -4 os-992046000275`.
+
+Your computer must to be set up to use a link-local address. This the default for Windows, but if you've used your computer with the Hokuyo lidar, it will like be set up with a static address.
+
+The arguments of the ouster_client program are the LIDAR hostname, the current computer's IP address, and the file name were the data are written.
+
+Before calling ouster_client, you need to also connect to the LIDAR to tell it where to send data. That is done with the following commands.
+
+`nc os-992046000275 7501`
+`set_config_param udp_dest [IP address of your computer]`
+`reinitialize`
+`save_config_params`
+
+Then disconnect from nc using ctrl-d. If you don't disconnect, ouster_client won't be able to connect.
+
+Because your computer will likely get a different address each time it connects to the network, you'll probably need to do this every time you use the lidar. We can make ouster_client set the address, but it hasn't been done yet.
+
+The Arduino that operates the encoder will need to be reprogrammed to use an address in the link-local range. I don't know of a way to have the Arduino do this automatically, so just pick something in the range and hopefully there won't be an address conflict. If there is a conflict, leave the Adruino connnected to the network and reset the network connection on the Ouster lidar and your computer, and their automatic configurations should pick a nonconflicting address.
